@@ -8,6 +8,15 @@
 // +----------------------------------------------------------------------
 // | Author: 老猫 <thinkcmf@126.com>
 // +----------------------------------------------------------------------
-return [
-    'ACCEPT' => 'ACCEPT'
-];
+namespace api\model;
+
+use think\Model;
+
+class GoodsModel extends Model
+{
+
+    protected $type = [
+        'more' => 'array',
+    ];
+
+}
