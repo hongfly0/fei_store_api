@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="renderer" content="webkit">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="format-detection" content="telephone=no" />
+<title>京东购物返利 - 喵惠</title>
+<meta name="keywords" content="京东返利,淘宝返利,天猫返利">
+<meta name="description" content="京东返利,淘宝返利,天猫返利">
+<link rel="stylesheet" type="text/css" href="/static/css/index1.css" />
+</head>
+<body>
+<div class="in">
+    <div class="logo"><img src="/static/images/logo.png" alt="" /></div>
+        <div class="search">
+            <input type="text" name="q" value="${q}" placeholder="支持京东宝贝关键词，或者直接粘贴宝贝链接。最高返72% 随时提现" class="sinput" id="keywords"/>
+            <input type="hidden" name="trackid" value=""/>
+            <input type="hidden" name="channel" value="fanli"/>
+            <input type="submit" value="搜返利" id="btn_search"/>
+            <i class="closeicon"></i>
+        </div>
+</div>
+
+<div id="layout_head">
+  <ul id="searchSort20" class="new-search-tab bdr-bom">
+    <li class="new-change-eleven active"><span class="J_ping">销量</span></li>
+    <li class="new-change-eleven new-sort-price"><span lass="J_ping">价格</span></li>
+    <li class="new-change-eleven new-sort-price"><span class="J_ping">返现</span></li>
+  </ul>
+</div>
+
+<div class="menu">
+    <div class="menu1">
+       搜索结果
+    </div>
+</div>
+<div class="fanmain" id="wrapper">
+    <ul id="thelist">
+    </ul>
+    <div id="pullUp">
+        <span class="pullUpIcon"></span><span class="pullUpLabel">加载中...</span>
+    </div>
+</div>
+<div class="popup" style="display: block">
+  <div class="popup-con">
+    <h3>喵惠提醒</h3>
+    <p><span style="color: #ff4081">页面中展示的返现金额是普通账号下单可得的返现金额</span>，如果您是京东会员Plus账户，返现金额会比普通账户低，所以大家最好采用普通账户下单哦~</p>
+    <label><input type="checkbox" />不再提醒</label>
+    <div>我知道了</div>
+  </div>
+</div>
+
+<script src="/static/js/zepto.min.js"></script>
+<script src="/static/js/tipbox.js"></script>
+<script type="text/javascript">
+$('.popup div').on('click',function(){
+    $('.popup').fadeOut();
+  })
+
+var setTime = 1000,n = 0;
+var page = 1;
+var totalPage = 100;
+var keywords = $('#keywords').val();
+
+$('.closeicon').on('click',function(){
+    $('.sinput').val('');
+    $('.search').removeClass('h');
+})
+$('.sinput').on('keyup',function(){
+  if($(this).length>0){
+    $(this).parents('.search').addClass('h');
+  } else {
+    $(this).parents('.search').removeClass('h');
+  }
+});
+
+$(window).scroll(function(){
+    var h_num=$(window).scrollTop(),$fan = $(".fanmain").offset().top;
+　　var scrollHeight = $(document).height();
+　　var windowHeight = $(this).height();
+　　if(h_num + windowHeight == scrollHeight){
+    if(page < totalPage) {
+        console.log('load more');
+        page = page + 1;
+        console.log("load page=" + page);
+        loadmore();
+     }
+　　}
+    if(h_num > $fan - 60){
+        $('.menu,.fanmain').addClass('fixed');
+        //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+    } else {
+        $('.menu,.fanmain').removeClass('fixed');
+    }
+})
+function loadmore() {
+    var el, li, i;
+    keywords = $('#keywords').val();
+    console.log('keywords: ' + keywords + ', page: ' + page);
+    el = document.getElementById('thelist');
+    var data = {
+            'q' : keywords,
+            'sortType' : 'comprehensive_sort',
+            'page' : page,
+            'pageSize' : 20,
+        }
+    $.ajax({
+        type: 'GET',
+        url: '/api/jd/search' ,
+        data: data,
+       dataType: 'json',
+       //contentType: "application/json; charset=utf-8", 
+           success:function(data) {
+               //console.log('detail info=' + JSON.stringify(data));
+               if(data.error_code == 200 ) {  
+                   var items = data.data.result;
+                   var ids = [];
+                   if(items != null) {
+                        for(var i=0; i<items.length; i++) {
+                            var item = items[i];
+                            ids.push(item.num_iid);
+                            var id = item.num_iid;
+                            var shop_type = '京东';
+                            var coupon_link = '/jd/tgo/' + item.num_iid;
+                            var volume = item.comment_num;
+                            var good_comment_percent = parseFloat(item.good_comment_num / item.comment_num).toFixed(2) * 100;
+                            var final_price = parseFloat(item.zk_final_price - item.coupon_amount).toFixed(2);
+                            var img_url = item.pic_url; // "https://img1.360buyimg.com/n1/"
+                            var price_id = "price_" + id;
+                            var promotion_id = "promotion_" + id;
+                            var html = '<li>'+
+                              '<a class="proa" href="'+coupon_link+'" target="_blank">'+ 
+                                '<div class="img" style="background-image: url('+img_url+');"></div> '+
+                                '<div class="i_productl_title">'+item.title+'</div>'+
+                                '<div class="i_nowprice">'+
+                                  '<span class="i_nowsp1">'+
+                                    '<span class="rmb_mark">&yen;</span>'+
+                                    '<strong><span class="big">'+item.zk_final_price+'</span></strong>'+
+                                  '</span>'+
+                                    '<span class="i_nowsp2">'+
+                                    '<span class="dsj-text"><b>'+item.commission_fee_user+'</b></span>'+
+                                    '<span class="dsj-left">返利</span>'+
+                                  '</span>'+
+                                '</div>'+
+                                /* '<div class="i_preprice">'+
+                                    '<span class="i_nowsp1">'+
+                                      '<span class="lsfan">再返:¥'+item.commission_fee_user+'</span>'+
+                                    '</span>'+
+                                    '<span class="rsfan"><b>¥'+final_price+'</b></span>'+
+                                '</div>'+ */
+                                '<div class="i_product_diwen">'+
+                                    '<div class="i_diwencontainer">'+
+                                        '<span class="fl">'+volume+'人评价，好评率'+good_comment_percent+'%</span>'+
+                                        '<span class="fr">'+shop_type+'</span>'+
+                                    '</div>'+
+                                '</div>'+
+                                '</a>'+
+                            '</li>';
+                            $('#thelist').append(html);
+                        }
+                   }
+                   console.log('ids=' + ids.join(','));
+               } else { 
+                   console.log('error:' + data.error_code);
+                   var error_code =  data.error_code;
+                   if(error_code == 60001) {
+                       return new TipBox({str:'亲，只支持京东的宝贝链接喔！',setTime:setTime});
+                   }
+                   else if(error_code == 60002) {
+                       return new TipBox({str:'宝贝链接格式不正确！',setTime:setTime});
+                   }
+                   else if(error_code == 60003) {
+                       return new TipBox({str:'对不起，该商品没有返利喔！',setTime:setTime});
+                   }
+               }  
+           },  
+           error : function() {  
+           }  
+   });
+}
+
+function loadPromotionInfo(ids) {
+    $.ajax({
+        type : "get",
+        async : true,
+        url : "/api/jd/batchGetSkus",
+        data : {
+            'ids' : ids.join(',')
+        },
+        cache : false, //默认值true
+        //dataType : "json",
+        success : function(data) {
+            console.log('promotion info:' + JSON.stringify(data));
+        },
+        error : function() {
+            return new TipBox({str:'验证码发送失败！',setTime:setTime});
+        }
+    });
+}
+
+$(document).ready(function() {
+    page = 1;
+    loadmore();
+    $('#btn_search').on('click', function(){
+        console.log('search load....');
+        keywords = $('#keywords').val();
+        if(keywords == null || ''==keywords) {
+            alert('请输入关键词再搜索噢！');
+            return new TipBox({str:'请输入关键词再搜索噢！',setTime:setTime});
+        }
+        $('#thelist').html('');
+        loadmore();
+    });
+});
+</script>
+</body></html>
