@@ -7,11 +7,11 @@ return [
     // 数据库类型
     'type'     => 'mysql',
     // 服务器地址
-    'hostname' => '127.0.0.1',
+    'hostname' => '134.175.191.134',
     // 数据库名
     'database' => 'fei_store',
     // 用户名
-    'username' => 'root',
+    'username' => 'fable',
     // 密码
     'password' => 'Feng2163906@',
     // 端口
