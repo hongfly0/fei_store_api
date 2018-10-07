@@ -13,13 +13,13 @@
 <title>京东购物返利 - 喵惠</title>
 <meta name="keywords" content="京东返利,淘宝返利,天猫返利">
 <meta name="description" content="京东返利,淘宝返利,天猫返利">
-<link rel="stylesheet" type="text/css" href="/static/css/index1.css" />
+<link rel="stylesheet" type="text/css" href="__TMPL__/public/assets/static/css/index1.css" />
 </head>
 <body>
 <div class="in">
-    <div class="logo"><img src="/static/images/logo.png" alt="" /></div>
+    <div class="logo"><img src="__TMPL__/public/assets/static/images/logo.png" alt="" /></div>
         <div class="search">
-            <input type="text" name="q" value="${q}" placeholder="支持京东宝贝关键词，或者直接粘贴宝贝链接。最高返72% 随时提现" class="sinput" id="keywords"/>
+            <input type="text" name="q" value="{$keyword}" placeholder="支持京东宝贝关键词，或者直接粘贴宝贝链接。最高返72% 随时提现" class="sinput" id="keywords"/>
             <input type="hidden" name="trackid" value=""/>
             <input type="hidden" name="channel" value="fanli"/>
             <input type="submit" value="搜返利" id="btn_search"/>
@@ -36,7 +36,7 @@
 </div>
 
 <div class="menu">
-    <div class="menu1">
+    <div class="menu1" id="result">
        搜索结果
     </div>
 </div>
@@ -56,8 +56,8 @@
   </div>
 </div>
 
-<script src="/static/js/zepto.min.js"></script>
-<script src="/static/js/tipbox.js"></script>
+<script src="__TMPL__/public/assets/static/js/zepto.min.js"></script>
+<script src="__TMPL__/public/assets/static/js/tipbox.js"></script>
 <script type="text/javascript">
 $('.popup div').on('click',function(){
     $('.popup').fadeOut();
@@ -111,15 +111,15 @@ function loadmore() {
             'pageSize' : 20,
         }
     $.ajax({
-        type: 'GET',
-        url: '/api/jd/search' ,
+        type: 'POST',
+        url: '/search' ,
         data: data,
        dataType: 'json',
        //contentType: "application/json; charset=utf-8", 
            success:function(data) {
-               //console.log('detail info=' + JSON.stringify(data));
-               if(data.error_code == 200 ) {  
-                   var items = data.data.result;
+               if(data.error_code == 200 ) {
+                   $("#result").hide();
+                   var items = data.result;
                    var ids = [];
                    if(items != null) {
                         for(var i=0; i<items.length; i++) {
@@ -130,6 +130,9 @@ function loadmore() {
                             var coupon_link = '/jd/tgo/' + item.num_iid;
                             var volume = item.comment_num;
                             var good_comment_percent = parseFloat(item.good_comment_num / item.comment_num).toFixed(2) * 100;
+                            if(isNaN(good_comment_percent)){
+                                good_comment_percent = 100;
+                            }
                             var final_price = parseFloat(item.zk_final_price - item.coupon_amount).toFixed(2);
                             var img_url = item.pic_url; // "https://img1.360buyimg.com/n1/"
                             var price_id = "price_" + id;
@@ -144,7 +147,7 @@ function loadmore() {
                                     '<strong><span class="big">'+item.zk_final_price+'</span></strong>'+
                                   '</span>'+
                                     '<span class="i_nowsp2">'+
-                                    '<span class="dsj-text"><b>'+item.commission_fee_user+'</b></span>'+
+                                    '<span class="dsj-text"><b>'+item.commission_fee+'</b></span>'+
                                     '<span class="dsj-left">返利</span>'+
                                   '</span>'+
                                 '</div>'+
@@ -165,9 +168,7 @@ function loadmore() {
                             $('#thelist').append(html);
                         }
                    }
-                   console.log('ids=' + ids.join(','));
-               } else { 
-                   console.log('error:' + data.error_code);
+               } else {
                    var error_code =  data.error_code;
                    if(error_code == 60001) {
                        return new TipBox({str:'亲，只支持京东的宝贝链接喔！',setTime:setTime});
@@ -177,6 +178,8 @@ function loadmore() {
                    }
                    else if(error_code == 60003) {
                        return new TipBox({str:'对不起，该商品没有返利喔！',setTime:setTime});
+                   }else if(error_code == 60010){
+                       return new TipBox({str:'已经到底了哦!',setTime:setTime});
                    }
                }  
            },  

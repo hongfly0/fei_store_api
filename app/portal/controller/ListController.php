@@ -11,22 +11,23 @@
 namespace app\portal\controller;
 
 use cmf\controller\HomeBaseController;
-use app\portal\model\PortalCategoryModel;
+use think\Request;
 
 class ListController extends HomeBaseController
 {
     public function index()
     {
-        $id                  = $this->request->param('id', 0, 'intval');
-        $portalCategoryModel = new PortalCategoryModel();
+        $keyword = request()->route('keywrod');
 
-        $category = $portalCategoryModel->where('id', $id)->where('status', 1)->find();
-       
-        $this->assign('category', $category);
+        if($keyword=='all'){
+            $keyword='';
+        }
 
-        $listTpl = empty($category['list_tpl']) ? 'list' : $category['list_tpl'];
+        $this->assign([
+            'keyword'  => $keyword
+        ]);
 
-        return $this->fetch('/' . $listTpl);
+        return $this->fetch(':jd_list');
     }
 
 }
