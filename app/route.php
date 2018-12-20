@@ -9,6 +9,8 @@
 // | Author: Dean <zxxjjforever@163.com>
 // +----------------------------------------------------------------------
 
+use think\Route;
+
 if (file_exists(CMF_ROOT . "data/conf/route.php")) {
     $runtimeRoutes = include CMF_ROOT . "data/conf/route.php";
 } else {
@@ -18,5 +20,9 @@ if (file_exists(CMF_ROOT . "data/conf/route.php")) {
 
     ];
 }
+
+Route::rule('list/:keywrod','portal/list/index');
+Route::rule('search','api/list/search');
+
 
 return $runtimeRoutes;

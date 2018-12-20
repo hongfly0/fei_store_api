@@ -1,0 +1,94 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="renderer" content="webkit">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="format-detection" content="telephone=no" />
+<title></title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="stylesheet" type="text/css" href="/static/css/center.css" />
+</head>
+<body>
+<div class="cinfo" style="background:#e6e6e6;">
+    <div class="cimg">
+        <div class="ye"><p>￥100.00</p>余额</div>
+    </div>
+    <div class="cimain ls">
+        <div class="fl">
+            <p>￥599.59</p><span>累计返现</span>
+        </div>
+        <div class="fl">
+            <p>9</p><span>累计提现</span>
+        </div>
+    </div>
+</div>
+<div class="lsmenu">
+    <ul>
+        <li class="act"><span>全部记录</span></li>
+        <li><span>返现记录</span></li>
+        <li><span>提现记录</span></li>
+    </ul>
+</div>
+<div class="lsmain">
+    <ul class="act">
+        <div class="none">天啊，居然流水都没有~</div><!--无内容显示-->
+        <li>
+            <div class="fl">
+                订单返现<p>2017.02.02 15:00</p>
+            </div>
+            <div class="fr">+￥1552.00</div>
+        </li>
+        <li class="t">
+            <div class="fl">
+                提现<p>2017.02.02 15:00</p>
+            </div>
+            <div class="fr">-￥1552.00</div>
+        </li>
+    </ul>
+    <ul>
+        <div class="none">天啊，居然流水都没有~</div><!--无内容显示-->
+        <li>
+            <div class="fl">
+                订单返现<p>2017.02.02 15:00</p>
+            </div>
+            <div class="fr">+￥88.00</div>
+        </li>
+        <li class="t">
+            <div class="fl">
+                提现<p>2017.02.02 15:00</p>
+            </div>
+            <div class="fr">-￥1552.00</div>
+        </li>
+    </ul>
+    <ul>
+        <div class="none">天啊，居然流水都没有~</div><!--无内容显示-->
+        <li>
+            <div class="fl">
+                订单返现<p>2017.02.02 15:00</p>
+            </div>
+            <div class="fr">+￥15442.00</div>
+        </li>
+        <li class="t">
+            <div class="fl">
+                提现<p>2017.02.02 15:00</p>
+            </div>
+            <div class="fr">-￥1552.00</div>
+        </li>
+    </ul>
+</div>
+<script src="/static/js/zepto.min.js"></script>
+<script>
+$('.lsmenu li').on('click',function(){
+    $(this).addClass('act').siblings('li').removeClass('act');
+    $('.lsmain ul').eq($(this).index()).addClass('act').siblings('ul').removeClass('act');
+})
+</script>
+</body></html>

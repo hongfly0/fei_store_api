@@ -1,0 +1,87 @@
+
+
+
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="renderer" content="webkit">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="format-detection" content="telephone=no" />
+<title>邀请你注册喵惠网</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="stylesheet" href="/static/css/regh.css" />
+<script src="/static/js/flexible_v2.js"></script>
+</head>
+<body>
+<div class="r">
+    <img src="/static/images/r1.png" alt="">
+</div>
+<div class="rm">
+<form action="">
+    <input type="tel" placeholder="请输入手机号" class="phone" maxlength="11" />
+    <div class="mm">
+        <input type="text" placeholder="请输入验证码" class="mcode" />
+        <div class="setm">获取验证码</div>
+    </div>
+    <!-- <input type="password" placeholder="请设置6～16位字母、数字组成的密码" style="margin-bottom:0" class="pw" /> -->
+    <div class="error"></div>
+    <div class="sub">开启品质生活</div>
+</form>
+</div>
+<script src="/static/js/zepto.min.js"></script>
+<script>
+$('.setm').on("tap",function(){
+    if(!$(this).hasClass('disabled')){
+        var timer = null;
+        var num = 59;
+        var mobileNumber = $(".phone").val();
+        if(mobileNumber != "") {
+            if(!regPhone(mobileNumber)) {
+                return $('.error').html("请输入正确的手机号");
+            } else {
+                $('.setm').addClass('disabled');
+                var urla = "";
+                $.ajax({
+                    type : "POST",
+                    url : urla,
+                    data: '',
+                    contentType: "application/json"
+                });
+                timer = setInterval(function() {
+                    num--;
+                    $(".setm").html(num + "s秒后重发");
+                    if(num <= 0) {
+                        $(".setm").removeClass('disabled').html("重发验证码");
+                        clearInterval(timer);
+                        num = 59;
+                    }
+                }, 1000);
+            }
+        } else {
+            return $('.error').html("手机号不能为空");
+        }
+    }
+})
+$('.sub').on('tap',function(){
+    if($('.phone').val() == ''){
+        return $('.error').html('手机号码不能为空');
+    } else if(!regPhone($('.phone').val())){
+        return $('.error').html('手机号码错误');
+    }
+    if($('.mcode').val() == ''){
+        return $('.error').html('请输入验证码');
+    }
+    $('form')[0].submit();
+})
+function regPhone(str) {
+    str = str.toString();
+    return /^1([38]\d|4[567]|5(?!4)\d|7[01678])\d{8}$/.test(str);
+}
+</script>
+</body></html>
